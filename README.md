@@ -26,7 +26,7 @@ Original Resources and Access (summaries and progressions provided below), <a hr
 Summary
 - Able to access all computers through one port, anything with IP Address (includes IP Cameras, etc.)
 - WireGuard is same program on Client or Server side, configurations are different
-- WireGuard is actually very simply ... May take a few weeks the first time but afterwards will take 15 minutes to set up a new installation
+- WireGuard is actually very simple ... May take a few weeks the first time but afterwards will take 15 minutes to set up a new installation
 
 ---
 
