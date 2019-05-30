@@ -6,12 +6,21 @@ WireGuard Lessons on a Raspberry Pi for encryption a Home-based network & Cell P
 - Use a Raspberry Pi to create a home-based VPN to encrypt and re-route data communication in questionable environments
 - CATUION: these lessons are meant for education purposes and not completely secure solutions
 
-**Special Thanks**: <a href="">Click Here</a>
+Note: this project introduces students to all concepts and ideas for <a href="http://www.nait.ca/program_home_78547.htm">NAIT's BAIST Program</a>
+- NAIT Supports Secondary Teacher Education in IT Services
+
+**Special Thanks**: <a href="https://github.com/QEHS-Networking/WireGuard-on-RPi#special-thanks">Click Here</a>
 
 Original Resources and Access (summaries and progressions provided below)
 
 **Progression of Steps**
+- Why WireGuard, <a href="">Click Here</a>
 - 
+<a href="">Click Here</a>
+
+---
+
+# Why do we use Wire-Guard in Mercer's Kitchen
 
 ---
 
