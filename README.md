@@ -4,7 +4,7 @@ WireGuard Lessons on a Raspberry Pi for encryption a Home-based network & Cell P
 **Purpose**: introduction to Cyber Security (Home-based or small networks) using industry-level Linux based encryption for IP Devices within a LAN and device encryptions (VPN-like) for outside a LAN-Router
 - Use a Raspberry Pi to create encryption device for router, interior-host, and exterior-device (Cell Phone) communication (i.e. monitoring cameras using IP Addresses)
 - Use a Raspberry Pi to create a home-based VPN to encrypt and re-route data communication in questionable environments
-- CATUION: these lessons are meant for education purposes and not completely secure solutions
+- CAUTION: these lessons are meant for education purposes and not completely secure solutions
 
 Note: this project introduces students to all concepts and ideas for <a href="http://www.nait.ca/program_home_78547.htm">NAIT's BAIST Program</a>
 - NAIT Supports Secondary Teacher Education in IT Services
@@ -53,7 +53,7 @@ Accessed 20190530
 
 Edmonton Public Schools IT Services for supporting Collaboration between Campus EPSB Computer Science & Networking.
 
-Eric Carlin (EPS IT Services) for his initiative, vision, and dedication to the education of students.
+Erik Carlin (EPS IT Services) for his initiative, vision, and dedication to the education of students.
 
 The greater Raspberry Pi communication for open source and resource sharing, especially the individuals who are referenced through these lessons.
 
