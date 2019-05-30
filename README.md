@@ -21,6 +21,19 @@ Original Resources and Access (summaries and progressions provided below), <a hr
 
 <a href="">Click Here</a>
 
+
+General Routine
+- SSH: use CMD.exe or PuTTy (must know IP First)
+  - pi@192.168.1.XXX (Note: must install SSH through CMD to use it)
+- Start x11vnc on RPi to use GUI-based remote software
+- Use GUI or CMD or PuTTy
+  - PUTTy to Copy is Highlight with mouse
+  - PuTTy to Paste is a RightClick
+- Have a record of ...
+  - Keys: key - device pairings (look up or saved from configuration on server machine)
+  - IP Addresses and subnets, with device pairings
+  - All ports forwarded on router (IP Address of machine, port on machine)
+
 ---
 
 # Why do we use Wire-Guard in Mercer's Kitchen
@@ -39,16 +52,40 @@ RPi 3 with Current OS, <a href="https://github.com/MercersKitchen/RPi-Unboxing">
 RPi File Configuration, see Full WireGuard Installation instructions for specific configurations
 - Big Idea: use NANO (RPi, Linux-based text editor)
 
+WireGuard App: See Google Play and iTunes (others exist; only use official one)
+- For Example: TunSafe
+
+Supported apps: iOS, Android, and Linux supported only (Windows is going to be released in Beta soon)
 ---
 
 # WireGuard Installation Instructions
 
 Combining (reference and acknowledgement)
-- Specific documents
+- Follow instructions <a href="https://github.com/adrianmihalko/raspberrypiwireguard">here</a> and <a href="https://www.youtube.com/watch?v=Q6pR_JEMRQA">here</a>
+- Adrian's WireGuard Document to setup WireGuard on a Machine (RPi)
+- Dr. ZZs YouTube Video
+- These instructions include RPi autostart file
 
 Overview of Lesson
 - Quick Start Guide to installing WireGuard as a conceptual overview, <a href="https://github.com/QEHS-Networking/WireGuard-on-RPi#quick-start-guide-to-installing-wireguard-conceptual-overview">Click Here</a>
 - Detailed Guide to WireGuard, <a href="https://github.com/QEHS-Networking/WireGuard-on-RPi#detailed-guide-to-wireguard">Click Here</a>
+
+Preparation Note:
+- Create a Notepad file for all keys and other information to be copied and pasted
+- Easier way to verify typing of keys: type a few letters, delete them from a representation of the key being typed (or type it with someone checking)
+
+<a href="https://www.youtube.com/watch?v=Q6pR_JEMRQA">DrZzs Home Automation Live Stream (WireGuard VPN full setup on RPi and iPhone)</a>, Sole Purpose of RPi is run WireGuard VPN
+- 00:04:16 (00:04:50)- What is WireGuard. It is a VPN in small total code and more secure (no return pings). WireGuard is new standard.
+- 00:15:14 (00:17:17)- Beginning of Installation, using SSH (Mr. Mercer uses full GUI with VNC, X11VNC, and TightVNC)
+- 00:26:14 WireGuard for Windows
+- 00:29:09 Back to setting up WireGuard
+- 00:43:17 Starting WireGuard, 00:45:45 - Completion of RPi Install
+- 00:44:50 Setting up clients
+- 00:47:11 Setting up WireGuard on iPhone or Android
+- 00:48:51 - 00:50:46 Endpoint on Clients, need Duck DNS (Dynamic Router IP) & Port for complete socket
+- 01:01:00 Port Forwarding
+- 01:05:00 - Competition of iOS Setup﻿
+- 01:29:18 set up another client in the configuration file of the RPi, also see adrianmihalko notes, not done
 
 ## Quick Start Guide to installing WireGuard (conceptual overview)
 
@@ -62,6 +99,147 @@ Introduction Video: https://www.wireguard.com/quickstart/
 
 ## Detailed Guide to WireGuard
 
+Go to these <a href="https://github.com/adrianmihalko/raspberrypiwireguard">Instructions</a>
+
+#### Section 1: remember ```reboot``` updates OS to enable next steps
+- Update-Upgrade-Reboot RPi OS, ensures all packages current
+- Installation of Kernel Headers
+  - Kernel: input-output system of the Linux operating system
+  - These start basic functionality in Linux; required when compiling code (configuration) when interfacing with the kernel
+  - Similar to adding a "Library" in Java, Processing-Java, Python, etc. but for C
+  - ECHO a key from a server to establish a "Trust" relationship so WireGuard installation is possible from the WireGuard Repository (similar to Windows trusting Windows Update)
+  - Inject the trusted key
+  - Finally, install WireGuard
+- With WireGuard installed, tell RPi to route traffic through itself (without this traffic doesn't flow as a security measure)
+  - OS does not act like a router natively, similar to bridging in Windows between WiFi & Ethernet
+  - Needs to communicate with RPi physical Ethernet port and logical WireGuard port (i.e. ```wg0 eth0```)
+- Check IPv4 forwarding works as intended
+
+#### Section 2
+- Two Choice: automatic or manual
+- We will use the manual configuration
+- Automatic uses C Scripts to generate keys and .config files, but these programs have a shelf life
+
+#### Section 3: creating keys, the authentication and encryption of WireGuard
+- Make a searchable directory
+- Navigate inside this directory
+- Using WireGuard function call GenKey, create server & client public and private keys
+- ```ls``` used to view directories and contents
+- Use CAT to view public and private keys (NANO is also possible)
+
+Note: these must be typed exactly
+
+Public and Private Key relationship is unique
+- public key is generated from the private key
+- private key is generated from GenKey based on MAC Address, prime numbers, and WireGuard formula (educated guess for device specific private key)
+
+Here, TightVNC or PuTTy copy-paste functions are valuable
+
+#### Section 4
+- Inside wgkeys directory, create wg0.conf (Configuration File, system configuration files read by kernel)
+- Pick the IPv4 address, with subnet prefix, based on Router's DHCP Service
+  - WireGuard needs to create a virtual network separate from the router's main networking schema so it can communicate
+- Pick the port WireGuard will listen for (completes socket TCP/IP Socket)
+
+Note: 192.168.XXX.XXX/24 is NAT-style home-based virtual network (internal network)
+- WireGuard client authenticates through IPv4 Address and public key
+- If WireGuard see client (192.168.99.2 & public key), server checks wg0.conf
+- If this matches, client is authenticated and traffic passes from WireGuard Interface to Ethernet port OUT
+
+Note: 10.0.0.X/24 is NAT-style business-based virtual network (internal network)
+
+CAUTION
+- Server Virtual Network needs larger subnet prefix to include all clients
+- Client's Virtual Network subnet prefix, /32, means it must match exactly
+
+Note: Server-Client language does not mean WireGuard is Server-Client Relationship
+- Same program on both sides
+- No difference between Server & Client except .conf file
+- Multiple clients defined on one WireGuard instance
+- This allows for multiple clients to connect to one WireGuard instance, physically defined by single router
+- Server-Client language is a close resemblance
+
+#### Section 5: start WireGuard with a WireGuard Function called ```wg-quick```
+- Add logical interface of wg0 to "UP" (i.e. physical port is UP when lights flashing)
+  - Sets configuration logical interface
+  - Sets logical interface with IPv4/XX
+  - Sets ICMP packet size
+- Check wg is working
+- If it is working, then create an auto startup script to execute WireGuard at Startup
+
+Note: wg-quick brings up and down WireGuard Tunnel easily based on wg0.conf
+
+CAUTION: if auto-start script is not run and there is a power failure, then RPi will not start WireGuard, leaving network inaccessible
+- WireGuard service must respond for routing traffic through RPi, to access network
+- Makes for easier troubleshooting when network inaccessible
+- Note: unplugging the RPi from physical ports in network removes "tunnel" and ability to connect to network from the ```outside```
+
+#### Section 6: Device Configuration
+
+**App Interface**
+
+Install WireGuard on Clients is same as on a server (i.e. Linux or iOS devices, Windows Client is "in the works")
+- WireGuard is currently most effective for mobile devices outside authenticated router WiFi
+
+Go to Google Play Store or Appel Store
+
+Download the Official App
+- Note: although still in Beta form, WireGuard is approved by Linus Torvalds, 20190530
+- Android, <a href="https://play.google.com/store/apps/details?id=com.wireguard.android&hl=en_CA">Play Store</a>
+- Apple, <a href="https://itunes.apple.com/us/app/wireguard/id1441195209?mt=8">App Store</a>
+
+Enter Interface Name, Network Name
+
+Enter Private and Public Keys, two methods
+1. Generate Private and Public Keys on RPi, copy both to device app (best practice)
+2. Able to generate App Public and Private to be copied to wg0.conf in RPi
+
+Enter (define) WireGuard Interface IPv4 Address in App
+- refer to wg0.conf
+- Note: this is the logical IPv4/24 address (describes split tunneling, beyond scope of this exercise)
+- Alternate Example: 192.168.99.3/32 points to very specific address, not range
+
+Listen Port is randomly generated on Client, defined on Server
+
+Enter Addresses
+
+Enter DNS Servers (answer what you would like to happen)
+- ```8.8.8.8```: Google DNS
+- ```9.9.9.9```: Quad-9 DNS
+- ```1.1.1.1```: Cloud Flare DNS
+- ```176.103.130.130``` and ```176.103.130.131```: Ad Guard DNS
+- OR
+- Pipe DNS Resolution through tunnel by providing IPv4 of router (i.e. 192.168.1.1): Router handles all DNS requests
+
+**Add Peer**
+- CAUTION: this is the RPi or previously the Server (language switches depending on perspective)
+
+Enter Public Key: RPi Public Key (Server Public Key)
+
+No Pre-shared Key (no entry)
+
+Enter Allowed IPv4's
+- Best Practice: 0.0.0.0/0 routes all device traffic through WireGuard
+- Alternate Entry deals with Split Tunneling, beyond scope of this exercise
+  - Enter RPi IPv4/32 WireGuard Virtual Address (i.e. 192.168.99.1/32)
+  - Enter Home Physical Network (i.e. 192.168.1.1/24)
+  - Split tunneling works if some traffic is socket defined outside WireGuard by specific applications
+
+Enter Endpoint: Public IP Address of Home Network
+- This changes regularly due to DHCP of ISP Provider (i.e. Telus, Shaw, etc.)
+- Therefore define friendly name URL for your Home IPv4
+- Home IPv4 is tracked via DDNS Provider (i.e. No IP, Duck DNS, etc.)
+  - Anytime Home IPv4 changes, DDNS Provider updates changes
+
+Enter Persistence Keepalive: ```25```
+- Allows connection to continuously communicate
+- Minimizes dropouts
+- Defined on both Server Side (RPi) and Client-side (mobile app)
+
+**Additional Information**
+
+Best Practice: delete all keys (public and private) from both server and client
+- Removes sensitive data, not WireGuard function
 
 ---
 
@@ -71,6 +249,19 @@ Last Accessed: 20190425 unless noted below
 No Free Lunch with WiFi and Personal Data: https://www.theguardian.com/business/2019/may/28/spies-with-that-police-can-snoop-on-mcdonalds-and-westfield-wifi-customers
 Accessed 20190530
 
+Resources
+1. <a href="https://www.wireguard.com/">WireGuard Website</a>
+
+2. <a href="https://www.youtube.com/watch?v=Q6pR_JEMRQA">DrZzs Home Automation Live Stream (WireGuard VPN full setup on RPi and iPhone)</a>
+   - Video has entertainment purposes ... lots of talking and interesting side notes
+   - Be prepared: ```pause``` video for copying and pasting TERMINAL Configuration Lines
+
+3. <a href="https://github.com/adrianmihalko/raspberrypiwireguard">Code and configuration used, from Adrian, referenced in video</a>
+   - Hints and Tips are along this DOC
+   - Read this closely and move slowly with the video
+
+Extra:
+   - <a href="https://p3lim.net/2018/08/27/wireguard">Setting up a WireGuard VPN Server</a>: IT Tech says there are some mistakes but pretty good
 
 ---
 
