@@ -176,6 +176,10 @@ CAUTION: if auto-start script is not run and there is a power failure, then RPi 
 
 #### Section 6: Device Configuration
 
+How do you copy and paste public and private keys to device (i.e. Android Phone)
+- Method 1: email .txt of keys (CAUTION: email not secure, yet convenient)
+- Method 2: print .txt to paper and cross out characters as typed (secure and painful)
+
 **App Interface**
 
 Install WireGuard on Clients is same as on a server (i.e. Linux or iOS devices, Windows Client is "in the works")
@@ -282,6 +286,24 @@ Queen Elizabeth High School and Sue Bell for a vision to support Career Pathways
 Diagram of How Wire Guard works as a
 - VPN for Cell Phone Encryption
 - Encryption for Router in home-based network application
--
+
+Extra Safe - Static IPv4 Address
+- Static Address on RPi AND Router's DHCP (best practice)
+  - RPi: setup menu (BIOS or ```raspi-config``` or Raspberry Configuration)
+- OR
+- Set Router's RPi IPv4 as Static (not prefered)
+  - Set RPi with static address (best practice)
+
+Copy over all notes from Previous WireGuard Repos
+- Use First: https://github.com/QEHS-Networking/Wireguard-Notes/tree/master/New%20Handout
+- Backup: https://github.com/QEHS-Networking/Wireguard-Notes
+- Copy all Files and Folders from: https://github.com/QEHS-Networking/Wireguard-Notes to Public README.md
+- Reference https://github.com/adrianmihalko/raspberrypiwireguard as starting instructions and terminal commands
+- Include SocksProxy explanation (see Erik)
+- Include Erik's Google Doc Starter Story: https://docs.google.com/document/d/1gRXOkD5KD_KoTx6Xuc-qOleUip3rxFemAwz1hj_S2p0/edit?ts=5ceff3dc
+- Verify RPi Unboxing: https://github.com/MercersKitchen/RPi-Unboxing
+- Teaching Tip: log into Black Router and Demonstrate port-forwarding instructions & DDNS Configuration
+
+Erik to review Public Repository
 
 ---
