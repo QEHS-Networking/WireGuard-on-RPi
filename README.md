@@ -11,11 +11,11 @@ Note: this project introduces students to all concepts and ideas for <a href="ht
 
 **Special Thanks**: <a href="https://github.com/QEHS-Networking/WireGuard-on-RPi#special-thanks">Click Here</a>
 
-Original Resources and Access (summaries and progressions provided below), <a href="">Click Here</a>
+Original Resources and Access (summaries and progressions provided below), <a href="https://github.com/QEHS-Networking/WireGuard-on-RPi#original-resources-and-special-thanks-for-this-contribution">Click Here</a>
 
 **Progression of Steps**
 - Why WireGuard?, <a href="https://github.com/QEHS-Networking/WireGuard-on-RPi#why-do-we-use-wire-guard-in-mercers-kitchen">Click Here</a>
--
+- Hardware Setup ... If you know how to do the following ... Just do it ... Otherwise follow the links to other repositories, instructions and documents, <a href="">Click Here</a>
 <a href="">Click Here</a>
 
 ---
@@ -26,6 +26,11 @@ Summary
 - Able to access all computers through one port, anything with IP Address (includes IP Cameras, etc.)
 - WireGuard is same program on Client or Server side, configurations are different
 - WireGuard is actually very simply ... May take a few weeks the first time but afterwards will take 15 minutes to set up a new installation
+
+---
+
+# Hardware Setup - Initial Setup Only
+
 
 ---
 
