@@ -1,7 +1,7 @@
 # WireGuard-on-RPi
 WireGuard Lessons on a Raspberry Pi for encryption a Home-based network & Cell Phone based-VPN
 
-**Purpose**: introduction to Cyber Security in Home-based or small networks
+**Purpose**: introduction to Cyber Security (Home-based or small networks) using industry-level Linux based encryption for IP Devices within a LAN and device encryptions (VPN-like) for outside a LAN-Router
 - Use a Raspberry Pi to create encryption device for router, interior-host, and exterior-device (Cell Phone) communication (i.e. monitoring cameras using IP Addresses)
 - Use a Raspberry Pi to create a home-based VPN to encrypt and re-route data communication in questionable environments
 - CATUION: these lessons are meant for education purposes and not completely secure solutions
@@ -11,16 +11,30 @@ Note: this project introduces students to all concepts and ideas for <a href="ht
 
 **Special Thanks**: <a href="https://github.com/QEHS-Networking/WireGuard-on-RPi#special-thanks">Click Here</a>
 
-Original Resources and Access (summaries and progressions provided below)
+Original Resources and Access (summaries and progressions provided below), <a href="">Click Here</a>
 
 **Progression of Steps**
-- Why WireGuard, <a href="">Click Here</a>
-- 
+- Why WireGuard?, <a href="https://github.com/QEHS-Networking/WireGuard-on-RPi#why-do-we-use-wire-guard-in-mercers-kitchen">Click Here</a>
+-
 <a href="">Click Here</a>
 
 ---
 
 # Why do we use Wire-Guard in Mercer's Kitchen
+
+Summary
+- Able to access all computers through one port, anything with IP Address (includes IP Cameras, etc.)
+- WireGuard is same program on Client or Server side, configurations are different
+- WireGuard is actually very simply ... May take a few weeks the first time but afterwards will take 15 minutes to set up a new installation
+
+---
+
+# Original Resources and Special Thanks for this contribution
+Last Accessed: 20190425 unless noted below
+
+No Free Lunch with WiFi and Personal Data: https://www.theguardian.com/business/2019/may/28/spies-with-that-police-can-snoop-on-mcdonalds-and-westfield-wifi-customers
+Accessed 20190530
+
 
 ---
 
