@@ -47,8 +47,8 @@ Combining
 -
 
 Overview of Lesson
-- Quick Start Guide to installing WireGuard as a conceptual overview, <a href="">Click Here</a>
-- Detailed Guide to WireGuard, <a href="">Click Here</a>
+- Quick Start Guide to installing WireGuard as a conceptual overview, <a href="https://github.com/QEHS-Networking/WireGuard-on-RPi#quick-start-guide-to-installing-wireguard-conceptual-overview">Click Here</a>
+- Detailed Guide to WireGuard, <a href="https://github.com/QEHS-Networking/WireGuard-on-RPi#detailed-guide-to-wireguard">Click Here</a>
 
 ## Quick Start Guide to installing WireGuard (conceptual overview)
 
