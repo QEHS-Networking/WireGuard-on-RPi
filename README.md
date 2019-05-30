@@ -43,8 +43,8 @@ RPi File Configuration, see Full WireGuard Installation instructions for specifi
 
 # WireGuard Installation Instructions
 
-Combining
--
+Combining (reference and acknowledgement)
+- Specific documents
 
 Overview of Lesson
 - Quick Start Guide to installing WireGuard as a conceptual overview, <a href="https://github.com/QEHS-Networking/WireGuard-on-RPi#quick-start-guide-to-installing-wireguard-conceptual-overview">Click Here</a>
@@ -52,7 +52,13 @@ Overview of Lesson
 
 ## Quick Start Guide to installing WireGuard (conceptual overview)
 
+[Teacher Specific, classroom only] Whiteboard Understanding of WireGuard
 
+Introduction Video: https://www.wireguard.com/quickstart/
+- two peers are configured at the same time
+- excellent introduction
+- building the .config file from commands and repositories pre-existing
+- if misunderstood, this will be re-explained in detail below
 
 ## Detailed Guide to WireGuard
 
