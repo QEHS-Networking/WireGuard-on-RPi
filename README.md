@@ -306,4 +306,6 @@ Copy over all notes from Previous WireGuard Repos
 
 Erik to review Public Repository
 
+Erik to extend by creating SSH Service Video
+
 ---
