@@ -10,5 +10,9 @@ WireGuard Lessons on a Raspberry Pi for encryption a Home-based network & Cell P
 
 # To Include
 
+Diagram of How Wire Guard works as a
+- VPN for Cell Phone Encryption
+- Encryption for Router in home-based network application
+-
 
 ---
