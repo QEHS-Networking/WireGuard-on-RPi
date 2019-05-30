@@ -15,7 +15,8 @@ Original Resources and Access (summaries and progressions provided below), <a hr
 
 **Progression of Steps**
 - Why WireGuard?, <a href="https://github.com/QEHS-Networking/WireGuard-on-RPi#why-do-we-use-wire-guard-in-mercers-kitchen">Click Here</a>
-- Hardware Setup ... If you know how to do the following ... Just do it ... Otherwise follow the links to other repositories, instructions and documents, <a href="">Click Here</a>
+- Hardware Setup ... If you know how to do the following ... Just do it ... Otherwise follow the links to other repositories, instructions and documents, <a href="https://github.com/QEHS-Networking/WireGuard-on-RPi#hardware-setup---initial-setup-only">Click Here</a>
+-
 <a href="">Click Here</a>
 
 ---
@@ -30,6 +31,11 @@ Summary
 ---
 
 # Hardware Setup - Initial Setup Only
+
+RPi 3 with Current OS, <a href="">Click Here for unboxing Repository in Mercer's Kitchen</a>
+
+RPi File Configuration
+- Big Idea: use NANO (RPi, Linux-based text editor)
 
 
 ---
