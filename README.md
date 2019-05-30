@@ -8,6 +8,10 @@ WireGuard Lessons on a Raspberry Pi for encryption a Home-based network & Cell P
 
 **Special Thanks**: <a href="">Click Here</a>
 
+Original Resources and Access (summaries and progressions provided below)
+
+**Progression of Steps**
+- 
 
 ---
 
