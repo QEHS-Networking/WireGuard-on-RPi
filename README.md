@@ -32,7 +32,7 @@ Summary
 
 # Hardware Setup - Initial Setup Only
 
-RPi 3 with Current OS, <a href="">Click Here for unboxing Repository in Mercer's Kitchen</a>
+RPi 3 with Current OS, <a href="https://github.com/MercersKitchen/RPi-Unboxing">Click Here for unboxing Repository in Mercer's Kitchen</a>
 
 RPi File Configuration
 - Big Idea: use NANO (RPi, Linux-based text editor)
