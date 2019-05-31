@@ -14,13 +14,16 @@ Note: this project introduces students to all concepts and ideas for <a href="ht
 Original Resources and Access (summaries and progressions provided below), <a href="https://github.com/QEHS-Networking/WireGuard-on-RPi#original-resources-and-special-thanks-for-this-contribution">Click Here</a>
 
 **Progression of Steps**
-- Why WireGuard?, <a href="https://github.com/QEHS-Networking/WireGuard-on-RPi#why-do-we-use-wire-guard-in-mercers-kitchen">Click Here</a>
+- Why WireGuard? How does WireGuard work? <a href="https://github.com/QEHS-Networking/WireGuard-on-RPi#why-do-we-use-wire-guard-in-mercers-kitchen">Click Here</a>
 - Hardware Setup ... If you know how to do the following ... Just do it ... Otherwise follow the links to other repositories, instructions and documents, <a href="https://github.com/QEHS-Networking/WireGuard-on-RPi#hardware-setup---initial-setup-only">Click Here</a>
 - WireGuard Installation Instructions, <a href="">Click Here</a>
+- DNS Redirection
+  - <a href="">NoIP<a/>: email to reactivate (green button) will come every month
+  - <a href="">Duck DNS</a>
+- Router Port Forwarding: <a href="">Example Router Instructions</a>, other routers will be different
 
 
 <a href="">Click Here</a>
-
 
 General Routine
 - SSH: use CMD.exe or PuTTy (must know IP First)
@@ -43,6 +46,22 @@ Summary
 - WireGuard is same program on Client or Server side, configurations are different
 - WireGuard is actually very simple ... May take a few weeks the first time but afterwards will take 15 minutes to set up a new installation
 
+WireGuard essentially works by IPv4 Forwarding
+
+Accessing Home Network from Android Device
+- Send WireGuard Packet to IP Address through Port
+- Goes to RPi Server
+- WireGuard on Server allows traffic through socket and encryption services
+- RPi allows traffic back to router and ...
+  - out of exterior port on router (i.e. WAN)
+  - to other devices based on IP Address (i.e. WiFi connected or LAN-Ethernet connected)
+
+Note about SERVER & CLIENT Vocabulary, WireGuard can be misleading
+- WireGuard is installed as an entire program on two devices
+- Server: actually routing all traffic from Outside Interface to multiple sockets (network range with single port, i.e. 51820)
+- Client: actually sending traffic to "router" through one specific socket
+- CAUTION: this is not like TightVNC Server-Viewer Relationship (i.e. example Server-Client relationship)
+
 ---
 
 # Hardware Setup - Initial Setup Only
@@ -56,6 +75,19 @@ WireGuard App: See Google Play and iTunes (others exist; only use official one)
 - For Example: TunSafe
 
 Supported apps: iOS, Android, and Linux supported only (Windows is going to be released in Beta soon)
+
+General Routine
+- SSH: use CMD.exe or PuTTy (must know IP First)
+  - pi@192.168.1.XXX (Note: must install SSH through CMD to use it)
+- Start x11vnc on RPi to use GUI-based remote software
+- Use GUI or CMD or PuTTy
+  - PUTTy to Copy is Highlight with mouse
+  - PuTTy to Paste is a RightClick
+- Have a record of ...
+  - Keys: key - device pairings (look up or saved from configuration on server machine)
+  - IP Addresses and subnets, with device pairings
+  - All ports forwarded on router (IP Address of machine, port on machine)
+
 ---
 
 # WireGuard Installation Instructions
@@ -244,6 +276,22 @@ Enter Persistence Keepalive: ```25```
 
 Best Practice: delete all keys (public and private) from both server and client
 - Removes sensitive data, not WireGuard function
+
+---
+
+# DNS Redirection (Domain Name Service)
+
+#### NoIP
+
+
+#### Duc DNS
+
+
+
+---
+
+# Router Port Forwarding
+
 
 ---
 

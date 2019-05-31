@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<!-- saved from url=(0038)https://p3lim.net/2018/08/27/wireguard -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<style class="anchorjs"></style><link rel="stylesheet" href="./Setting up a WireGuard VPN Server_files/milligram.min.css">
+		<link rel="stylesheet" href="./Setting up a WireGuard VPN Server_files/fonts.css">
+		<link rel="stylesheet" href="./Setting up a WireGuard VPN Server_files/style.css">
+		<link rel="stylesheet" href="./Setting up a WireGuard VPN Server_files/pygments.css">
+		<link rel="stylesheet" href="./Setting up a WireGuard VPN Server_files/gfm.min.css">
+		<link rel="icon" href="https://p3lim.net/assets/images/favicon.ico">
+		<title>Setting up a WireGuard VPN Server</title>
+	</head>
+	<body data-path="/2018/08/27/wireguard">
+		<header>
+			<a href="https://p3lim.net/">
+				<img src="./Setting up a WireGuard VPN Server_files/bear.svg">
+			</a>
+		</header>
+
+		<article data-nwo="p3lim/p3lim.github.io" data-sha="84ec449474256ecd6a57f03255ac35239c553524">
+	<header>
+		<h1>Setting up a WireGuard VPN Server</h1>
+		<date>27 Aug 2018</date>
+	</header>
+	<section>
+		<p>I’ve been using <a href="https://openvpn.net/">OpenVPN</a> for a while on my home server just to keep my portable devices safe while roaming, but I’ve never 
+quite liked its unstable nature, slow reconnection speeds and hosts of options making it harder to keep up with in terms of best practices.</p>
+
+<p>I recently found out about <a href="https://www.wireguard.com/">WireGuard</a>, and was intrigued considering the <a href="http://lkml.iu.edu/hypermail/linux/kernel/1808.0/02472.html">praise it got</a> from none other than <a href="https://twitter.com/linus__torvalds">Linus Torvalds</a>!</p>
+
+<p>It boasts simple configuration, strong encryption, great performance and a codebase so small it can be audited in under a day. It’s created by Jason A. Donenfeld, also known as <a href="https://www.zx2c4.com/">ZX2C4</a>, author of popular open source projects such as <a href="https://www.passwordstore.org/">pass</a> and <a href="https://git.zx2c4.com/cgit/about/">cgit</a>.</p>
+
+<p>Now, this is mostly for evaluation purposes, the project is still quite young and is considered a <a href="https://www.wireguard.com/#work-in-progress">work in progress</a>, so please make sure you know what you’re getting yourself into.
+I will not be doing benchmarks as there’s loads out there already, this is merely a how-to for installing it yourself. 
+If you want to know more about the project, read the <a href="https://www.wireguard.com/papers/wireguard.pdf">whitepaper</a> and/or watch <a href="https://www.wireguard.com/presentations/">presentations</a> about the project.</p>
+
+<p>With the warnings out of the way, I wanted to test this out on my environment consisting of the following:</p>
+
+<ul>
+  <li>Server running Debian 9.5 (w/networkd)</li>
+  <li>Laptop running Arch Linux (w/networkd)</li>
+  <li>Phone running Android 8.1</li>
+</ul>
+
+<p>The server will act as the VPN host, with the laptop and phone as clients connecting into its virtual network.</p>
+
+<h3 id="installation"><a class="anchorjs-link " href="https://p3lim.net/2018/08/27/wireguard#installation" aria-label="Anchor link for: installation" data-anchorjs-icon="" style="position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>Installation</h3>
+
+<p>I will be doing this on my server running Debian, but WireGuard supports most (if not all) major distributions, even other OSes!
+Following the steps on the <a href="https://www.wireguard.com/install/">official installation page</a>, I added the sources and preferences and installed WireGuard like so:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>apt install wireguard
+</code></pre></div></div>
+<p>One thing that the installation page doesn’t mention is that we’ll also need the linux headers to create new links, so install that too:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>apt install linux-headers-<span class="k">$(</span>uname <span class="nt">-r</span><span class="k">)</span>
+</code></pre></div></div>
+
+<h3 id="configuring"><a class="anchorjs-link " href="https://p3lim.net/2018/08/27/wireguard#configuring" aria-label="Anchor link for: configuring" data-anchorjs-icon="" style="position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>Configuring</h3>
+
+<p>WireGuard is relatively simple to get set up, but can get confusing if its your first time.<br>
+A lot of the work is simplified with the <code class="highlighter-rouge">wg-quick</code> tool, which we’ll be using.</p>
+
+<p>First we’ll need to generate some keys, and we’ll store them in <code class="highlighter-rouge">/etc/wireguard/keys</code> so we’ll have to make that directory too.</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mkdir /etc/wireguard/keys
+chmod 700 /etc/wireguard/keys
+touch /etc/wireguard/keys/server
+chmod 600 /etc/wireguard/keys/server
+wg genkey <span class="o">&gt;</span> /etc/wireguard/keys/server
+wg pubkey &lt; /etc/wireguard/keys/server <span class="o">&gt;</span> /etc/wireguard/keys/server.pub
+</code></pre></div></div>
+
+<p>And there we have it, our private and public keys. Let’s proceed with the configuration file:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>touch /etc/wireguard/wg0.conf
+nano /etc/wireguard/wg0.conf
+</code></pre></div></div>
+
+<p>In here we’ll need to add an “interface”, namely the server:</p>
+<div class="language-ini highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">[Interface]</span>
+<span class="py">Address</span>    <span class="p">=</span> <span class="s">10.0.0.1/24</span>
+<span class="py">PrivateKey</span> <span class="p">=</span> <span class="s">GAfZYrZqYd1YSoKs7Zd136hyQ8hJzZsariabybuuXG4</span>
+<span class="py">ListenPort</span> <span class="p">=</span> <span class="s">51820</span>
+</code></pre></div></div>
+<p>The <code class="highlighter-rouge">Address</code> field signifies the <em>virtual</em> network that the server will be on, <code class="highlighter-rouge">/24</code> signifies the <a href="https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing">CIDR</a>.<br>
+The <code class="highlighter-rouge">PrivateKey</code> is the key we generated earlier, copy-pasted from <code class="highlighter-rouge">/etc/wireguard/keys/server</code>.<br>
+The <code class="highlighter-rouge">ListenPort</code> is the external port we’re accepting traffic on, this <strong>needs</strong> to be opened on your firewall/router!</p>
+
+<p>Now we just have to start it, which we’ll use systemd for to also add persistency:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>systemctl <span class="nb">enable </span>wp-quick@wg0.service <span class="nt">--now</span>
+<span class="c"># wg0 must match the configuration file; wg0.conf</span>
+</code></pre></div></div>
+
+<p>That’s it, now you have your WireGuard server up and running!<br>
+You can verify this by running <code class="highlighter-rouge">wg</code> to see WireGuard status, or <code class="highlighter-rouge">ip addr</code> to see the network interface status.</p>
+
+<h3 id="connecting-the-laptop"><a class="anchorjs-link " href="https://p3lim.net/2018/08/27/wireguard#connecting-the-laptop" aria-label="Anchor link for: connecting the laptop" data-anchorjs-icon="" style="position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>Connecting the laptop</h3>
+
+<p>Now that WireGuard is running on the server, I want to connect my laptop to it. With Arch Linux, I install the packages:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pacman <span class="nt">-S</span> wireguard-tools linux-headers
+</code></pre></div></div>
+
+<p>I create the keys like before:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mkdir /etc/wireguard/keys
+chmod 700 /etc/wireguard/keys
+touch /etc/wireguard/keys/laptop
+chmod 600 /etc/wireguard/keys/laptop
+wg genkey <span class="o">&gt;</span> /etc/wireguard/keys/laptop
+wg pubkey &lt; /etc/wireguard/keys/laptop <span class="o">&gt;</span> /etc/wireguard/keys/laptop.pub
+</code></pre></div></div>
+<p>Then we need to create the config, much like before:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>touch /etc/wireguard/wg0.conf
+nano /etc/wireguard/wg0.conf
+</code></pre></div></div>
+
+<p>Now we’ll need to add both an “interface” (for the laptop), and a “peer” (the server we’re connecting to):</p>
+<div class="language-ini highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">[Interface]</span>
+<span class="py">Address</span>    <span class="p">=</span> <span class="s">10.0.0.2/24</span>
+<span class="py">PrivateKey</span> <span class="p">=</span> <span class="s">8J1AJiIUOZZaIi4X58v3cGc3yHJg+96bW+6lD6q9q1E=</span>
+
+<span class="nn">[Peer]</span>
+<span class="py">PublicKey</span>  <span class="p">=</span> <span class="s">4MlvhLDMs53kHKPRpsfvQ5jIz8eajY7IbcIUbvfISXY=</span>
+<span class="py">AllowedIPs</span> <span class="p">=</span> <span class="s">0.0.0.0/0 ::0/0</span>
+<span class="py">EndPoint</span>   <span class="p">=</span> <span class="s">vpn.example.com:51820</span>
+</code></pre></div></div>
+
+<p>The interface <code class="highlighter-rouge">Address</code> is <code class="highlighter-rouge">10.0.0.2</code>, as this will be the laptop’s address on the virtual network on the server.<br>
+The interface <code class="highlighter-rouge">PrivateKey</code> is what we generated into <code class="highlighter-rouge">/etc/wireguard/keys/laptop</code>.<br>
+The peer <code class="highlighter-rouge">PublicKey</code> is what we generated on the server in <code class="highlighter-rouge">/etc/wireguard/keys/server.pub</code>.<br>
+The peer <code class="highlighter-rouge">AllowedIPs</code> just says that we’ll accept any traffic coming from the VPN server, both IPv4 and IPv6 traffic.<br>
+The peer <code class="highlighter-rouge">Endpoint</code> is the public-facing address for the server, which could just as well be an IP address if you don’t have a domain for it.</p>
+
+<p>We also need to whitelist the laptop on the server, so let’s add to the <code class="highlighter-rouge">/etc/wireguard/wg0.conf</code> there:</p>
+<div class="language-ini highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">[Interface]</span>
+<span class="py">Address</span>    <span class="p">=</span> <span class="s">10.0.0.1/24</span>
+<span class="py">PrivateKey</span> <span class="p">=</span> <span class="s">GAfZYrZqYd1YSoKs7Zd136hyQ8hJzZsariabybuuXG4</span>
+<span class="py">ListenPort</span> <span class="p">=</span> <span class="s">51820</span>
+
+<span class="nn">[Peer]</span>
+<span class="py">PublicKey</span>  <span class="p">=</span> <span class="s">lNq6ckxoW5N+l8Sg11M2U5z5VGp/B0bR+kAhYsU9Vyc=</span>
+<span class="py">AllowedIPs</span> <span class="p">=</span> <span class="s">10.0.0.2/32</span>
+</code></pre></div></div>
+<p>The only thing we changed here was adding the “peer” for the laptop,<br>
+<code class="highlighter-rouge">PublicKey</code> being the key we made on the laptop in <code class="highlighter-rouge">/etc/wireguard/keys/laptop.pub</code>,<br>
+<code class="highlighter-rouge">AllowedIPs</code> is a whitelist of the laptop’s <code class="highlighter-rouge">Address</code> field, with a CIDR of <code class="highlighter-rouge">/32</code> to only allow 1 IP.</p>
+
+<p>Lastly, on the server we’ll need to restart the tunnel:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>systemctl restart wp-quick@wg0.service
+</code></pre></div></div>
+
+<p>And on the laptop we just need to start it, same as we did on the server:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>systemctl <span class="nb">enable </span>wp-quick@wg0.service <span class="nt">--now</span>
+</code></pre></div></div>
+
+<p>I also suggest enabling this networkd service to make sure the network is up:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>systemctl <span class="nb">enable </span>systemd-networkd-wait-online.service
+</code></pre></div></div>
+
+<h3 id="connecting-the-phone"><a class="anchorjs-link " href="https://p3lim.net/2018/08/27/wireguard#connecting-the-phone" aria-label="Anchor link for: connecting the phone" data-anchorjs-icon="" style="position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>Connecting the phone</h3>
+
+<p>This is the most experimental part. One of the reasons WireGuard is so performant is because it’s entirely running in the kernel, 
+but the kernels on Android phones are notorious for being outdated. Unless you’re running a custom ROM or know the inner workings of them, 
+you’ll lose out on this benefit. I’m OK with that, so let’s get started!</p>
+
+<p>First we’ll need to install the preview of the WireGuard client, found on Google Play only at the moment:<br>
+<a href="https://play.google.com/store/apps/details?id=com.wireguard.android">https://play.google.com/store/apps/details?id=com.wireguard.android</a><br>
+(Sidenote: they plan on having it available on <a href="https://f-droid.org/en/packages/com.wireguard.android/">F-Droid</a> too)</p>
+
+<p>Open up the app, and you’ll be presented with a blank slate. Hit the “+” button in the bottom-right and select “Create from scratch”.</p>
+
+<p><img src="./Setting up a WireGuard VPN Server_files/44641423-29393080-a9c7-11e8-8fc6-223abc5721d8.png" alt=""></p>
+
+<p>Choose any name you want, hit the “Generate” button on the right side, and fill in the “Addresses” field.<br>
+Again, we’re using the <code class="highlighter-rouge">10.0.0.x/24</code> format, this time the last number is <code class="highlighter-rouge">3</code>.<br>
+Lastly, add some DNS servers, I like to use <a href="https://1.1.1.1/">1.1.1.1</a>, but you can pick any you want (comma-separated).</p>
+
+<p><img src="./Setting up a WireGuard VPN Server_files/44641428-2dfde480-a9c7-11e8-8d38-c0dfa9d5d0d4.png" alt=""></p>
+
+<p>Hit the big “Add Peer” button and fill in the fields for the server like we did for the laptop.</p>
+
+<p><img src="./Setting up a WireGuard VPN Server_files/44641432-30f8d500-a9c7-11e8-84e2-edbb7679b01e.png" alt=""></p>
+
+<p>That’s pretty much it for the phone setup, just hit the save button in the top-right to finish.<br>
+We’ll need the “Public key” from the phone, I suggest using some form for copy-pasting it since it’s a bit tedious to type out manually.</p>
+
+<p>Back to the server, we’ll need to whitelist the phone like we did with the laptop, so let’s modify <code class="highlighter-rouge">/etc/wireguard/wg0.conf</code> again:</p>
+<div class="language-ini highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">[Interface]</span>
+<span class="py">Address</span>    <span class="p">=</span> <span class="s">10.0.0.1/24</span>
+<span class="py">PrivateKey</span> <span class="p">=</span> <span class="s">GAfZYrZqYd1YSoKs7Zd136hyQ8hJzZsariabybuuXG4</span>
+<span class="py">ListenPort</span> <span class="p">=</span> <span class="s">51820</span>
+
+<span class="nn">[Peer]</span>
+<span class="py">PublicKey</span>  <span class="p">=</span> <span class="s">lNq6ckxoW5N+l8Sg11M2U5z5VGp/B0bR+kAhYsU9Vyc=</span>
+<span class="py">AllowedIPs</span> <span class="p">=</span> <span class="s">10.0.0.2/32</span>
+
+<span class="nn">[Peer]</span>
+<span class="py">PublicKey</span>  <span class="p">=</span> <span class="s">lXjYOk+11EB6JrRyw0z/3dVewvfoCuvdC6XwQALQKXM=</span>
+<span class="py">AllowedIPs</span> <span class="p">=</span> <span class="s">10.0.0.3/32</span>
+</code></pre></div></div>
+<p>The only thing to change is adding the 2nd peer, for the phone.<br>
+And like before, we’ll need to restart the tunnel on the server:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>systemctl restart wp-quick@wg0.service
+</code></pre></div></div>
+
+<p>Finally, just flip the switch in the app and you should be connected!</p>
+
+<p>You can now see all peers by running <code class="highlighter-rouge">wg</code> on the server.</p>
+
+<h3 id="tedious-to-add-new-clients"><a class="anchorjs-link " href="https://p3lim.net/2018/08/27/wireguard#tedious-to-add-new-clients" aria-label="Anchor link for: tedious to add new clients" data-anchorjs-icon="" style="position: absolute; margin-left: -1em; padding-right: 0.5em;"></a>Tedious to add new clients?</h3>
+
+<p>Instead of having to modify the file for every client you want to add to the server you could also use the <code class="highlighter-rouge">wg</code> tool instead:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># add peer</span>
+wg <span class="nb">set </span>wg0 peer &lt;client_pubkey&gt; allowed-ips 10.0.0.x/32
+
+<span class="c"># verify connection</span>
+wg
+
+<span class="c"># save to config</span>
+wg-quick save wg0
+</code></pre></div></div>
+
+<p>That last line can be omitted if you add <code class="highlighter-rouge">SaveConfig = true</code> under the <code class="highlighter-rouge">[Interface]</code> on the server’s config.</p>
+
+	</section>
+	
+		<section id="comments">
+			<hr>
+			<span style="display: none;">Please enable JavaScript to view the <a href="https://p3lim.net/2018/05/04/github-powered-comments">comments powered by GitHub.</a></span>
+		<div class="gfm"><a href="https://github.com/p3lim/p3lim.github.io/commit/84ec449474256ecd6a57f03255ac35239c553524#comments">Leave a comment on GitHub</a></div></section>
+	
+</article>
+
+<script src="./Setting up a WireGuard VPN Server_files/anchor.min.js.download"></script>
+<script src="./Setting up a WireGuard VPN Server_files/anchor.js.download"></script>
+
+<script src="./Setting up a WireGuard VPN Server_files/moment.min.js.download"></script>
+<script src="./Setting up a WireGuard VPN Server_files/marked.min.js.download"></script>
+<script src="./Setting up a WireGuard VPN Server_files/comments.js.download" async=""></script>
+
+
+	
+
+</body></html>
