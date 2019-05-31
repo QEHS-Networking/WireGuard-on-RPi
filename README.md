@@ -13,6 +13,11 @@ Note: this project introduces students to all concepts and ideas for <a href="ht
 
 Original Resources and Access (summaries and progressions provided below), <a href="https://github.com/QEHS-Networking/WireGuard-on-RPi#original-resources-and-special-thanks-for-this-contribution">Click Here</a>
 
+RPi Hardware Setup Summary
+- Full setup, then headless
+- Ensured, Putty, TightVNC, and X11VNC
+- Headless is done with outside IP (not 169.254.xxx.xxx), bridged connection through Network Connections
+
 **Progression of Steps**
 - Why WireGuard? How does WireGuard work? <a href="https://github.com/QEHS-Networking/WireGuard-on-RPi#why-do-we-use-wire-guard-in-mercers-kitchen">Click Here</a>
 - Hardware Setup ... If you know how to do the following ... Just do it ... Otherwise follow the links to other repositories, instructions and documents, <a href="https://github.com/QEHS-Networking/WireGuard-on-RPi#hardware-setup---initial-setup-only">Click Here</a>
@@ -21,9 +26,6 @@ Original Resources and Access (summaries and progressions provided below), <a hr
   - <a href="">NoIP<a/>: email to reactivate (green button) will come every month
   - <a href="">Duck DNS</a>
 - Router Port Forwarding: <a href="">Example Router Instructions</a>, other routers will be different
-
-
-<a href="">Click Here</a>
 
 General Routine
 - SSH: use CMD.exe or PuTTy (must know IP First)
@@ -36,6 +38,20 @@ General Routine
   - Keys: key - device pairings (look up or saved from configuration on server machine)
   - IP Addresses and subnets, with device pairings
   - All ports forwarded on router (IP Address of machine, port on machine)
+
+---
+
+Testing that the Android Device is within LAN (WiFi Connected) or not
+- Google Play Ping Apps: Ping by Lipnic (Tested), Net Ping, Ping & DNS
+  - Test to make sure this works first inside network
+  - Errors might be machine actively ignores pings (might be firewall too)
+- Need to leave the home network (turn off WiFi and use other network like cellular data)
+- Ping computer in Home Network using app and IP Address of RPi
+
+---
+
+Problem Solving Ports and Sockets
+- Can you see me .org: type in port to see it
 
 ---
 
@@ -87,6 +103,21 @@ General Routine
   - Keys: key - device pairings (look up or saved from configuration on server machine)
   - IP Addresses and subnets, with device pairings
   - All ports forwarded on router (IP Address of machine, port on machine)
+
+---
+
+Reminder for RPi: enable routing (similar to bridging on Windows between WiFi and Ethernet)
+
+Enabling RPi IPv4 Forwarding
+
+pi@raspberrypi:~ $ sysctl net.ipv4.ip_forward
+
+Return: net.ipv4.ip_forward = 1
+
+If you did that then routing on the pi is enabled so that's good.
+
+If you get net.ipv4.ip_forward = 0, please manually edit sudo nano /etc/sysctl.conf and add net.ipv4.ip_forward = 1
+- comment out `=0` line
 
 ---
 
@@ -191,6 +222,18 @@ Note: Server-Client language does not mean WireGuard is Server-Client Relationsh
 - This allows for multiple clients to connect to one WireGuard instance, physically defined by single router
 - Server-Client language is a close resemblance
 
+---
+
+CAUTION: purpose of these commands is to tell the RPi to forward traffic to the proper destinations through eth0
+- Commands are done within wgo.conf
+- Include in Section 4 of Detailed WireGuard Instructions for Server
+
+```
+PostUp = iptables -A FORWARD -i %i -j ACCEPT; iptables -A FORWARD -o %i -j ACCEPT; iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+PostDown = iptables -D FORWARD -i %i -j ACCEPT; iptables -D FORWARD -o %i -j ACCEPT; iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
+```
+
+---
 #### Section 5: start WireGuard with a WireGuard Function called ```wg-quick```
 - Add logical interface of wg0 to "UP" (i.e. physical port is UP when lights flashing)
   - Sets configuration logical interface
@@ -205,6 +248,15 @@ CAUTION: if auto-start script is not run and there is a power failure, then RPi 
 - WireGuard service must respond for routing traffic through RPi, to access network
 - Makes for easier troubleshooting when network inaccessible
 - Note: unplugging the RPi from physical ports in network removes "tunnel" and ability to connect to network from the ```outside```
+
+---
+
+Addition to Consider
+
+In RPi Server: `PersistentKeepalive = 25`
+- In the Peer Client, last line
+
+---
 
 #### Section 6: Device Configuration
 
@@ -245,7 +297,7 @@ Enter DNS Servers (answer what you would like to happen)
 - ```1.1.1.1```: Cloud Flare DNS
 - ```176.103.130.130``` and ```176.103.130.131```: Ad Guard DNS
 - OR
-- Pipe DNS Resolution through tunnel by providing IPv4 of router (i.e. 192.168.1.1): Router handles all DNS requests
+- Pipe DNS Resolution through tunnel by providing IPv4 of router (i.e. 192.168.1.1): Router handles all DNS requests (router must be able to handle DNS Requests)
 
 **Add Peer**
 - CAUTION: this is the RPi or previously the Server (language switches depending on perspective)
@@ -283,15 +335,112 @@ Best Practice: delete all keys (public and private) from both server and client
 
 #### NoIP
 
+Dynamic Domain Name Server: https://www.noip.com/
+
+Summary of Steps
+  - Choose Domain Name
+  - Choose ddns.net
+  - Create an account
+  - Confirm through email ... ready to go
+  - Monthly email to ensure freemium (monthly activation)
+  - [Option: turn off IP on router and add DUC on a machine, with noip.com program download to create router IP]
+  - Last EMail Welcome has a list of instructions
+- [Option] Duck DNS .org
+- Verify registration
+
+Machine needs to be on 24/7
+- If machine gets turned off use DUC
 
 #### Duc DNS
 
+Used only if Router cannot be DDNS Client
 
+<a href="https://www.duckdns.org/index.jsp">Duck DNS Home</a>
+- Login with a service to save documentation
+- Duck DNS will save tokens, domain names, etc.
+- Able to fully delete information when not needed
+
+Instruction set with additions that are different than the website
+- NOTE: website has some explanations as what things do, these are more hand skills
+- Create Domain, choose domain name, save to Notepad file for later remembering
+- Choose Pi Operating System
+- Enter Domain Name
+- Use PuTTy to SSH to clean installation of RPi
+- Run these commands, one at a time
+  - `NOTE: NANO is used below but vi is listed in website, I liked nano more`
+  - $ mkdir duckdns
+  - $ cd duckdns
+  - X~duckdns $ nano duck.sh
+- Put this script into duck,sh
+  - CAUTION: require the Domain Name and Token from Duck DNS, or ECHO Script from Duck DNS
+  - `echo url="https://www.duckdns.org/update?domains=[DOMAIN NAME]&token=[TOKEN FROM Duck DNS]" | curl -k -o ~/duckdns/duck.log -K -`
+  - Save and close the file
+- Move back to parent folder, `cd ..`
+- Run these commands, one at a time
+  - $ chmod 700 duck.sh
+  - $ crontab -e
+- Open the `crontab -e` with NANO
+  - Add to the bottom (comments at the top, a ReadMe)
+  - `*/5 * * * * ~/duckdns/duck.sh >/dev/null 2>&1`
+  - Close and Save the file
+- Test the file, returns a prompt
+  - $ ./duck.sh
+- Test if OK or KO
+  - $ cat duck.log
+
+Configuration is finished for Duck DNS
 
 ---
 
 # Router Port Forwarding
+**Following Instructions uses 1nnov8's Home Router as an Exemplar**
+- Concepts and order will be the same on other routers
+- Exact configuration and options may require additional research
+---
 
+Port Forwarding will depend on router type
+- Note: try to maintain table consistency between inside, outside LAN and WAN Ports
+- Must be UDP (not TCP)
+
+Example App on Apple device (Google WiFi), or log into router
+
+Must figure out Network of Router, including subnet mask (needed for WireGuard Client Configuration)
+
+---
+
+Setup DDNS on Asus Black Router
+- <a href="https://drive.google.com/drive/folders/11RtE_L60TWHMvi1klt4c2PXJlRSTca9d">Google DOCs File</a>
+- Left Hand Picker / WAN / DDNS (TAB)
+- Enable DDNS Client (yes)
+- Choose NoIP.com
+- Hostname (from NoIP.com): innovatelab.ddns.net
+- UserName or EMail (credentials from NoIP.com): mark.mercer@epsb.ca
+- Password (credential from NoIP.com): see files
+- Enable Wildcard: no
+- WAN IP and Hostname Verification: no
+
+Port Forwarding
+- WAN (Left Hand Picker) / Virtual Server / Port Forwarding (TAB)
+- Enable port Forwarding
+- Work in Port Forwarding List (Manually add port forwarding)
+  - Service Name: any name that makes sense
+  - Source Target (any source): leave blank
+  - Port Range: [port listed in Interface from WireGuard, i.e. 51820]
+- In-between Steps
+  - [Must connect RPi to router, will handout DHCP IP, read from inside router's DHCP Lease List]
+  - LAN / DHCP Server
+  - Enable Manual Assignment: yes
+  - Manually Assigned IP around DHCP List (Max 64): read IP Address or change it
+    - Example: 192.168.1.59
+    - This configures static IP
+    - Very important this never changes or port forwarding breaks
+  - Click APPLY
+- Work in Port Forwarding List (Manually add port forwarding)
+  - Local IP: choose device (raspberry)
+  - Local Port: assigned in Interface (i.e. 51820)
+  - Protocol: UDP
+  - Click ADD
+  - Click APPLY
 
 ---
 
@@ -308,6 +457,22 @@ Resources
    - Video has entertainment purposes ... lots of talking and interesting side notes
    - Be prepared: ```pause``` video for copying and pasting TERMINAL Configuration Lines
 
+   Preparation Note:
+   - Create a Notepad file for all keys and other information to be copied and pasted
+   - Easier way to verify typing of keys: type a few letters, delete them from a representation of the key being typed (or type it with someone checking)
+   <a href="https://www.youtube.com/watch?v=Q6pR_JEMRQA">DrZzs Home Automation Live Stream (WireGuard VPN full setup on RPi and iPhone)</a>, Sole Purpose of RPi is run WireGuard VPN
+   - 00:04:16 (00:04:50)- What is WireGuard. It is a VPN in small total code and more secure (no return pings). WireGuard is new standard.
+   - 00:15:14 (00:17:17)- Beginning of Installation, using SSH (Mr. Mercer uses full GUI with VNC, X11VNC, and TightVNC)
+   - 00:26:14 WireGuard for Windows
+   - 00:29:09 Back to setting up WireGuard
+   - 00:43:17 Starting WireGuard, 00:45:45 - Completion of RPi Install
+   - 00:44:50 Setting up clients
+   - 00:47:11 Setting up WireGuard on iPhone or Android
+   - 00:48:51 - 00:50:46 Endpoint on Clients, need Duck DNS (Dynamic Router IP) & Port for complete socket
+   - 01:01:00 Port Forwarding
+   - 01:05:00 - Competition of iOS Setup﻿
+   - 01:29:18 set up another client in the configuration file of the RPi, also see adrianmihalko notes, not done
+
 3. <a href="https://github.com/adrianmihalko/raspberrypiwireguard">Code and configuration used, from Adrian, referenced in video</a>
    - Hints and Tips are along this DOC
    - Read this closely and move slowly with the video
@@ -317,6 +482,26 @@ Extra:
 
 ---
 
+# Trouble Shooting
+
+- Ensure keys are in the correct places: server and client
+- Ensure port is correct (three places): server, client, and router
+- Ensure the endpoint (Duck DNS) is correct (target of client)
+
+CAUTION: in the client for ALLOWED IP's on the Client (see 01:30:20)
+- if use 0.0.0.0/0 at the end of the ALLOWED IP
+- then all traffic through client will go to WireGuard, not a split tunnel based on IP Address and Port
+- this includes all Banking information, Google Searching, etc. to go through Home Network first (works like VPN)
+- Requires basic understanding of where traffic is originating, etc.
+
+Commands to start and stop WireGuard
+```
+$ wg-quick down wg0
+$ wg-quick up wg0
+$ wg (for status, if connected should get latest handshake)
+```
+
+---
 # Special Thanks
 
 Edmonton Public Schools IT Services for supporting Collaboration between Campus EPSB Computer Science & Networking.
@@ -355,5 +540,13 @@ Copy over all notes from Previous WireGuard Repos
 Erik to review Public Repository
 
 Erik to extend by creating SSH Service Video
+
+Erik to explore SocksProxy
+
+Future Story
+- Secure traffic from inbound to outbound - much more important (Wanacry Virus)
+- Use Firefox
+
+Additions: Firewall, Untangle (see: https://www.untangle.com/, accessed 20190305)
 
 ---
