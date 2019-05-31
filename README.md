@@ -162,7 +162,9 @@ Introduction Video: https://www.wireguard.com/quickstart/
 
 ## Detailed Guide to WireGuard
 
-Go to these <a href="https://github.com/adrianmihalko/raspberrypiwireguard">Instructions</a>
+Go to these <a href="https://github.com/adrianmihalko/raspberrypiwireguard">Instructions</a> for specific commands and To Do List
+
+Below are explanation of these other instructions.
 
 #### Section 1: remember ```reboot``` updates OS to enable next steps
 - Update-Upgrade-Reboot RPi OS, ensures all packages current
