@@ -19,6 +19,7 @@ RPi Hardware Setup Summary
 - Headless is done with outside IP (not 169.254.xxx.xxx), bridged connection through Network Connections
 
 **Progression of Steps**
+- Beginnings: how this project got started, <a href="https://docs.google.com/document/d/1gRXOkD5KD_KoTx6Xuc-qOleUip3rxFemAwz1hj_S2p0/edit?ts=5ceff3dc">one story by Mr. Carlin</a>, <a href="https://github.com/QEHS-Networking/WireGuard-on-RPi/tree/master/Beginnings%20Backup">Click Here for a Backup Copy</a>
 - Why WireGuard? How does WireGuard work? <a href="https://github.com/QEHS-Networking/WireGuard-on-RPi#why-do-we-use-wire-guard-in-mercers-kitchen">Click Here</a>
 - Hardware Setup ... If you know how to do the following ... Just do it ... Otherwise follow the links to other repositories, instructions and documents, <a href="https://github.com/QEHS-Networking/WireGuard-on-RPi#hardware-setup---initial-setup-only">Click Here</a>
 - WireGuard Installation Instructions, <a href="">Click Here</a>
