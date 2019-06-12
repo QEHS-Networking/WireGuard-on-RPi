@@ -338,7 +338,7 @@ Enter Persistence Keepalive: ```25```
 Best Practice: delete all keys (public and private) from both server and client
 - Removes sensitive data, not WireGuard function
 
----
+If students want to plug in their RPi into the Black Router, leave the current WireGuard RPi plugged in (power only), then plug the student's RPi in with the Ethernet cord
 
 # DNS Redirection (Domain Name Service)
 
