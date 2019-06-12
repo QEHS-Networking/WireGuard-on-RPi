@@ -131,6 +131,7 @@ If you get net.ipv4.ip_forward = 0, please manually edit sudo nano /etc/sysctl.c
 
 Combining (reference and acknowledgement)
 - Follow instructions <a href="https://github.com/adrianmihalko/raspberrypiwireguard">here</a> and <a href="https://www.youtube.com/watch?v=Q6pR_JEMRQA">here</a>
+- Note: `apt-get` works and `apt` migth not work, try apt-get first
 - Adrian's WireGuard Document to setup WireGuard on a Machine (RPi)
 - Dr. ZZs YouTube Video
 - These instructions include RPi autostart file
