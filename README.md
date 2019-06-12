@@ -26,7 +26,8 @@ Click Here for a Backup Copy</a>
 Click Here</a>
 - Hardware Setup ... If you know how to do the following ... Just do it ... Otherwise follow the links to other repositories, instructions and documents, <a href="https://github.com/QEHS-Networking/WireGuard-on-RPi#hardware-setup---initial-setup-only">
 Click Here</a>
-- WireGuard Installation Instructions, <a href="">Click Here</a>
+- WireGuard Installation Instructions, <a href="https://github.com/QEHS-Networking/WireGuard-on-RPi#wireguard-installation-instructions">
+Click Here</a>
 - DNS Redirection
   - <a href="">NoIP<a/>: email to reactivate (green button) will come every month
   - <a href="">Duck DNS</a>
