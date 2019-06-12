@@ -15,7 +15,7 @@ Original Resources and Access (summaries and progressions provided below), <a hr
 
 RPi Hardware Setup Summary
 - Full setup, then headless
-- Ensured, Putty, TightVNC, and X11VNC
+- Ensured, Putty, X11VNC, and TightVNC
 - Headless is done with outside IP (not 169.254.xxx.xxx), bridged connection through Network Connections
 
 **Progression of Steps**
