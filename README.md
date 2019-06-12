@@ -559,3 +559,14 @@ Future Story
 Additions: Firewall, Untangle (see: https://www.untangle.com/, accessed 20190305)
 
 ---
+
+## Troubleshooting
+
+Students did a lot of practice with
+- Creating a VNC
+- Apt vs. apt-get
+- Copying and pasting commands from the installation instructions
+- Very few students got to the configuration of Android App to verify the IP Addresses and hardware configurations
+- More advanced students will need more online guidance
+
+---
