@@ -1,5 +1,5 @@
-# WireGuard-on-RPi
-WireGuard Lessons on a Raspberry Pi for encryption a Home-based network & Cell Phone based-VPN
+# WireGuard on RPi
+WireGuard Lessons on a Raspberry Pi for encrypting a Home-based network & Cell Phone based-VPN
 
 **Purpose**: introduction to Cyber Security (Home-based or small networks) using industry-level Linux based encryption for IP Devices within a LAN and device encryptions (VPN-like) for outside a LAN-Router
 - Use a Raspberry Pi to create encryption device for router, interior-host, and exterior-device (Cell Phone) communication (i.e. monitoring cameras using IP Addresses)
@@ -19,9 +19,13 @@ RPi Hardware Setup Summary
 - Headless is done with outside IP (not 169.254.xxx.xxx), bridged connection through Network Connections
 
 **Progression of Steps**
-- Beginnings: how this project got started, <a href="https://docs.google.com/document/d/1gRXOkD5KD_KoTx6Xuc-qOleUip3rxFemAwz1hj_S2p0/edit?ts=5ceff3dc">one story by Mr. Carlin</a>, <a href="https://github.com/QEHS-Networking/WireGuard-on-RPi/tree/master/Beginnings%20Backup">Click Here for a Backup Copy</a>
-- Why WireGuard? How does WireGuard work? <a href="https://github.com/QEHS-Networking/WireGuard-on-RPi#why-do-we-use-wire-guard-in-mercers-kitchen">Click Here</a>
-- Hardware Setup ... If you know how to do the following ... Just do it ... Otherwise follow the links to other repositories, instructions and documents, <a href="https://github.com/QEHS-Networking/WireGuard-on-RPi#hardware-setup---initial-setup-only">Click Here</a>
+- Beginnings: how this project got started, <a href="https://docs.google.com/document/d/1gRXOkD5KD_KoTx6Xuc-qOleUip3rxFemAwz1hj_S2p0/edit?ts=5ceff3dc">
+one story by Mr. Carlin</a>, <a href="https://github.com/QEHS-Networking/WireGuard-on-RPi/tree/master/Beginnings%20Backup">
+Click Here for a Backup Copy</a>
+- Why WireGuard? How does WireGuard work? <a href="https://github.com/QEHS-Networking/WireGuard-on-RPi#why-do-we-use-wire-guard-in-mercers-kitchen">
+Click Here</a>
+- Hardware Setup ... If you know how to do the following ... Just do it ... Otherwise follow the links to other repositories, instructions and documents, <a href="https://github.com/QEHS-Networking/WireGuard-on-RPi#hardware-setup---initial-setup-only">
+Click Here</a>
 - WireGuard Installation Instructions, <a href="">Click Here</a>
 - DNS Redirection
   - <a href="">NoIP<a/>: email to reactivate (green button) will come every month
